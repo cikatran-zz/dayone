@@ -1,18 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoon } from "@fortawesome/free-solid-svg-icons";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import "../styles/_app.scss";
 
-const handleDarkModeBtn = () => {
-  const el = document.querySelector("html");
-  if (el.classList.contains("dark-mode")) {
-    el.classList.remove("dark-mode");
-    return;
-  }
-  el.classList.add("dark-mode");
-};
-
 function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    try {
+      const isDarkMode = window.localStorage.getItem("isDarkMode");
+      toggleDarkMode(JSON.parse(isDarkMode));
+    } catch (error) {}
+    return () => {};
+  }, []);
+
+  const handleDarkModeBtn = () => {
+    const checkIsDarkMode =
+      document.documentElement.classList.contains("dark-mode");
+    toggleDarkMode(!checkIsDarkMode);
+  };
+
+  const toggleDarkMode = (applyDarkMode) => {
+    if (applyDarkMode) {
+      document.documentElement.classList.add("dark-mode");
+      setIsDarkMode(true);
+      window.localStorage.setItem("isDarkMode", true);
+      return;
+    }
+    document.documentElement.classList.remove("dark-mode");
+    setIsDarkMode(false);
+    window.localStorage.setItem("isDarkMode", false);
+  };
+
   return (
     <div className="app">
       <div className="level">
@@ -21,8 +40,14 @@ function App() {
         </div>
 
         {/* --The button that should toggle dark mode-- */}
-        <button className="app__dark-mode-btn icon level-right">
-          <FontAwesomeIcon icon={faMoon} />
+        <button
+          className="app__dark-mode-btn icon level-right"
+          onClick={handleDarkModeBtn}
+        >
+          <FontAwesomeIcon
+            icon={isDarkMode ? faMoon : faSun}
+            color={isDarkMode ? "#FFFFFF" : "#FFA500"}
+          />
         </button>
       </div>
 
