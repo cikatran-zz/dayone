@@ -10,10 +10,6 @@ const balancedSum = (arr) => {
   //we will traverse 2 cursor and move the cursor forward from 2 sides based if it's sum less than the other side sum
   //then move the cursor to next element
   while (right - left > 1 && sum_left != sum_right) {
-    console.log("left: ", left);
-    console.log("right: ", right);
-    console.log("sum_left: ", sum_left);
-    console.log("sum_right: ", sum_right);
     if (sum_left < sum_right) {
       left++;
       sum_left += arr[left];
@@ -31,4 +27,31 @@ const balancedSum = (arr) => {
   return result ? result : -1;
 };
 
-console.log(balancedSum([1, 2, 3, 6]));
+const path = require("path");
+const fs = require("fs");
+
+const directoryPath = path.join(__dirname, "test_cases");
+
+const readFileLines = (filename) =>
+  fs
+    .readFileSync(filename)
+    .toString("UTF8")
+    .split("\n")
+    .map((item) => parseInt(item, 10));
+
+fs.readdir(directoryPath, function (err, files) {
+  if (err) {
+    return console.log("Unable to scan directory: " + err);
+  }
+
+  files.forEach(function (file) {
+    const filePath = path.join(directoryPath, file);
+    const arr = readFileLines(filePath);
+    const result = balancedSum(arr);
+    result > 0
+      ? console.log(`The array in ${file} is balanced at: `, result)
+      : console.log(`The array in ${file} is not balanced`);
+  });
+});
+
+// console.log(balancedSum([1, 2, 3, 6]));
